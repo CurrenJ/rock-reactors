@@ -1,0 +1,9 @@
+{
+  "fluid_type": "any_lava",
+  "condition": {
+    "type": "adjacent_block",
+    "block": "minecraft:blue_ice"
+  },
+  "result": "minecraft:diorite"
+}
+

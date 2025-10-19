@@ -1,0 +1,9 @@
+{
+  "fluid_type": "any_lava",
+  "condition": {
+    "type": "adjacent_block",
+    "block": "minecraft:packed_ice"
+  },
+  "result": "minecraft:andesite"
+}
+

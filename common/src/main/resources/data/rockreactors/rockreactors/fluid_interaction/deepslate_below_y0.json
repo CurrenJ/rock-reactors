@@ -1,0 +1,10 @@
+{
+  "fluid_type": "lava_flowing",
+  "condition": {
+    "type": "adjacent_fluid_with_y",
+    "fluid": "minecraft:water",
+    "y_condition": "below_zero"
+  },
+  "result": "minecraft:deepslate"
+}
+
