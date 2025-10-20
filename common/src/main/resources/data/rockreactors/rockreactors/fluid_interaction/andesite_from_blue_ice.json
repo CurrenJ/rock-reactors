@@ -4,6 +4,7 @@
     "type": "adjacent_block",
     "block": "minecraft:blue_ice"
   },
-  "result": "minecraft:diorite"
+  "result": "minecraft:andesite",
+  "consume_chance": 0.1
 }
 

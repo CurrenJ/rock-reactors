@@ -4,6 +4,7 @@
     "type": "adjacent_block",
     "block": "minecraft:soul_soil"
   },
-  "result": "minecraft:netherrack"
+  "result": "minecraft:netherrack",
+  "consume_chance": 0.1
 }
 

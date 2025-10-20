@@ -1,9 +1,10 @@
 {
-  "fluid_type": "any_lava",
+  "fluid_type": "lava_flowing",
   "condition": {
     "type": "adjacent_block",
     "block": "minecraft:packed_ice"
   },
-  "result": "minecraft:andesite"
+  "result": "minecraft:diorite",
+  "consume_chance": 0.25
 }
 

@@ -1,0 +1,10 @@
+{
+  "fluid_type": "lava_flowing",
+  "condition": {
+    "type": "adjacent_block",
+    "block": "minecraft:gravel"
+  },
+  "result": "minecraft:tuff",
+  "replace_adjacent": true
+}
+

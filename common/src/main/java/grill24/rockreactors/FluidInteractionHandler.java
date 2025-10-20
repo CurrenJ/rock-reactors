@@ -1,11 +1,9 @@
 package grill24.rockreactors;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 
@@ -26,15 +24,79 @@ public class FluidInteractionHandler {
         FluidState fluidState = level.getFluidState(pos);
 
         if (fluidState.is(FluidTags.LAVA)) {
-            for (Direction direction : LiquidBlock.POSSIBLE_FLOW_DIRECTIONS) {
-                BlockPos adjacentPos = pos.relative(direction.getOpposite());
-                BlockState adjacentState = level.getBlockState(adjacentPos);
+            FluidInteractionManager.InteractionResult result = FluidInteractionManager.findInteractionWithPosition(level, pos, fluidState);
 
-                BlockState generatedBlock = FluidInteractionManager.getGeneratedBlock(level, pos, adjacentState);
+            if (result != null) {
+                BlockState generatedBlock = result.getInteraction().getResult();
 
                 if (generatedBlock != null) {
-                    level.setBlockAndUpdate(pos, generatedBlock);
-                    return true;
+                    int replaceRadius = result.getInteraction().getReplaceRadius();
+
+                    if (result.getInteraction().shouldReplaceAdjacent() && replaceRadius > 1) {
+                        // Replace multiple blocks in a Manhattan distance radius around the fluid
+                        int blocksReplaced = 0;
+                        for (int dx = -replaceRadius; dx <= replaceRadius; dx++) {
+                            for (int dy = -replaceRadius; dy <= replaceRadius; dy++) {
+                                for (int dz = -replaceRadius; dz <= replaceRadius; dz++) {
+                                    // Calculate Manhattan distance
+                                    int manhattanDistance = Math.abs(dx) + Math.abs(dy) + Math.abs(dz);
+                                    if (manhattanDistance <= replaceRadius && manhattanDistance > 0) {
+                                        BlockPos targetPos = pos.offset(dx, dy, dz);
+                                        BlockState targetState = level.getBlockState(targetPos);
+
+                                        // Check if this position matches the interaction condition
+                                        if (result.getInteraction().shouldInteract(level, pos, targetPos, fluidState)) {
+                                            level.setBlockAndUpdate(targetPos, generatedBlock);
+                                            blocksReplaced++;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // Handle fluid consumption based on consume_chance
+                        float consumeChance = result.getInteraction().getConsumeChance();
+                        if (blocksReplaced > 0 && consumeChance > 0.0f && level.getRandom().nextFloat() < consumeChance) {
+                            level.setBlockAndUpdate(pos, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+                        }
+
+                        return blocksReplaced > 0;
+                    } else {
+                        // Standard behavior: replace single position
+                        BlockPos targetPos;
+                        BlockPos consumePos;
+
+                        if (result.getInteraction().shouldReplaceAdjacent()) {
+                            // Replace the adjacent block with the result
+                            targetPos = result.getAdjacentPos();
+                            consumePos = pos; // Optionally consume the fluid position
+                        } else {
+                            // Replace the fluid with the result (default behavior)
+                            targetPos = pos;
+                            consumePos = result.getAdjacentPos(); // Optionally consume the adjacent block
+                        }
+
+                        // Place the generated block at the target position
+                        level.setBlockAndUpdate(targetPos, generatedBlock);
+
+                        // Handle consumption based on consume_chance
+                        float consumeChance = result.getInteraction().getConsumeChance();
+                        if (consumeChance > 0.0f && level.getRandom().nextFloat() < consumeChance) {
+                            BlockState consumeState = level.getBlockState(consumePos);
+                            FluidState consumeFluid = level.getFluidState(consumePos);
+
+                            // Remove the block or fluid at the consume position
+                            if (!consumeFluid.isEmpty()) {
+                                // If there's a fluid, remove it by setting to air
+                                level.setBlockAndUpdate(consumePos, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+                            } else if (!consumeState.isAir()) {
+                                // If there's a block (and no fluid), remove it
+                                level.setBlockAndUpdate(consumePos, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+                            }
+                        }
+
+                        return true;
+                    }
                 }
             }
         }

@@ -1,0 +1,10 @@
+{
+  "fluid_type": "lava_flowing",
+  "condition": {
+    "type": "adjacent_block",
+    "block": "minecraft:ice"
+  },
+  "result": "minecraft:granite",
+  "consume_chance": 0.5
+}
+

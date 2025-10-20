@@ -1,0 +1,10 @@
+{
+  "fluid_type": "lava_flowing",
+  "condition": {
+    "type": "adjacent_block",
+    "block": "minecraft:deepslate"
+  },
+  "result": "minecraft:basalt",
+  "replace_adjacent": true,
+  "replace_radius": 2
+}

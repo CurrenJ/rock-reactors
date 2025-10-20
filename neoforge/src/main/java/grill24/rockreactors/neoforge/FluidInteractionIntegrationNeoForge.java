@@ -1,5 +1,6 @@
 package grill24.rockreactors.neoforge;
 
+import grill24.rockreactors.FluidInteractionHandler;
 import grill24.rockreactors.data.FluidInteractionData;
 import grill24.rockreactors.registry.FluidInteractionRegistry;
 import net.minecraft.core.Registry;
@@ -26,11 +27,17 @@ public class FluidInteractionIntegrationNeoForge {
             registry.forEach(interaction -> {
                 if (!interaction.isDisabled()) {
                     // Convert our FluidInteractionData to NeoForge's InteractionInformation
+                    // Use the common FluidInteractionHandler logic
                     net.neoforged.neoforge.fluids.FluidInteractionRegistry.InteractionInformation info =
                         new net.neoforged.neoforge.fluids.FluidInteractionRegistry.InteractionInformation(
-                        (level, currentPos, relativePos, currentState) -> interaction.shouldInteract(level, currentPos, relativePos, currentState),
-                        interaction.getResult()
-                    );
+                            interaction::shouldInteract,
+                            (level, currentPos, relativePos, currentState) -> {
+                                // Delegate to the common handler which includes consume logic
+                                FluidInteractionHandler.handleFluidInteraction(level, currentPos, null);
+                                // Fire the fizz effect
+                                level.levelEvent(1501, currentPos, 0);
+                            }
+                        );
 
                     // Register with NeoForge's registry for lava type
                     net.neoforged.neoforge.fluids.FluidInteractionRegistry.addInteraction(NeoForgeMod.LAVA_TYPE.value(), info);

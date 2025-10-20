@@ -21,7 +21,10 @@ public class FluidInteractionData {
         instance.group(
             Codec.STRING.fieldOf("fluid_type").forGetter(data -> data.fluidType),
             InteractionConditionData.CODEC.fieldOf("condition").forGetter(data -> data.condition),
-            Codec.STRING.fieldOf("result").forGetter(data -> data.resultString)
+            Codec.STRING.fieldOf("result").forGetter(data -> data.resultString),
+            Codec.floatRange(0.0f, 1.0f).optionalFieldOf("consume_chance", 0.0f).forGetter(data -> data.consumeChance),
+            Codec.BOOL.optionalFieldOf("replace_adjacent", false).forGetter(data -> data.replaceAdjacent),
+            Codec.intRange(1, 16).optionalFieldOf("replace_radius", 1).forGetter(data -> data.replaceRadius)
         ).apply(instance, FluidInteractionData::new)
     );
 
@@ -30,11 +33,17 @@ public class FluidInteractionData {
     private final String resultString;
     private final Block resultBlock;
     private final boolean disabled;
+    private final float consumeChance;
+    private final boolean replaceAdjacent;
+    private final int replaceRadius;
 
-    public FluidInteractionData(String fluidType, InteractionConditionData condition, String resultString) {
+    public FluidInteractionData(String fluidType, InteractionConditionData condition, String resultString, float consumeChance, boolean replaceAdjacent, int replaceRadius) {
         this.fluidType = fluidType;
         this.condition = condition;
         this.resultString = resultString;
+        this.consumeChance = consumeChance;
+        this.replaceAdjacent = replaceAdjacent;
+        this.replaceRadius = replaceRadius;
 
         if ("none".equals(resultString)) {
             this.resultBlock = null;
@@ -82,6 +91,18 @@ public class FluidInteractionData {
 
     public Block getResultBlock() {
         return resultBlock;
+    }
+
+    public float getConsumeChance() {
+        return consumeChance;
+    }
+
+    public boolean shouldReplaceAdjacent() {
+        return replaceAdjacent;
+    }
+
+    public int getReplaceRadius() {
+        return replaceRadius;
     }
 
     /**

@@ -1,0 +1,9 @@
+{
+  "fluid_type": "lava_flowing",
+  "condition": {
+    "type": "adjacent_block",
+    "block": "minecraft:packed_ice"
+  },
+  "result": "minecraft:calcite"
+}
+
