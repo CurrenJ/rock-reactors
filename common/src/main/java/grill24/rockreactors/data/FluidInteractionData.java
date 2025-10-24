@@ -24,7 +24,8 @@ public class FluidInteractionData {
             Codec.STRING.fieldOf("result").forGetter(data -> data.resultString),
             Codec.floatRange(0.0f, 1.0f).optionalFieldOf("consume_chance", 0.0f).forGetter(data -> data.consumeChance),
             Codec.BOOL.optionalFieldOf("replace_adjacent", false).forGetter(data -> data.replaceAdjacent),
-            Codec.intRange(1, 16).optionalFieldOf("replace_radius", 1).forGetter(data -> data.replaceRadius)
+            Codec.intRange(1, 16).optionalFieldOf("replace_radius", 1).forGetter(data -> data.replaceRadius),
+            Codec.floatRange(0.0f, 1.0f).optionalFieldOf("success_chance", 1.0f).forGetter(data -> data.successChance)
         ).apply(instance, FluidInteractionData::new)
     );
 
@@ -36,14 +37,16 @@ public class FluidInteractionData {
     private final float consumeChance;
     private final boolean replaceAdjacent;
     private final int replaceRadius;
+    private final float successChance;
 
-    public FluidInteractionData(String fluidType, InteractionConditionData condition, String resultString, float consumeChance, boolean replaceAdjacent, int replaceRadius) {
+    public FluidInteractionData(String fluidType, InteractionConditionData condition, String resultString, float consumeChance, boolean replaceAdjacent, int replaceRadius, float successChance) {
         this.fluidType = fluidType;
         this.condition = condition;
         this.resultString = resultString;
         this.consumeChance = consumeChance;
         this.replaceAdjacent = replaceAdjacent;
         this.replaceRadius = replaceRadius;
+        this.successChance = successChance;
 
         if ("none".equals(resultString)) {
             this.resultBlock = null;
@@ -103,6 +106,10 @@ public class FluidInteractionData {
 
     public int getReplaceRadius() {
         return replaceRadius;
+    }
+
+    public float getSuccessChance() {
+        return successChance;
     }
 
     /**

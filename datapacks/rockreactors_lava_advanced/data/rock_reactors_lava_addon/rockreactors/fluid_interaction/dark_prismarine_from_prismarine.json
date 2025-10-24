@@ -1,0 +1,11 @@
+{
+  "fluid_type": "lava_source",
+  "condition": {
+    "type": "adjacent_block",
+    "block": "minecraft:prismarine"
+  },
+  "result": "minecraft:dark_prismarine",
+  "replace_adjacent": true,
+  "consume_chance": 0.3
+}
+

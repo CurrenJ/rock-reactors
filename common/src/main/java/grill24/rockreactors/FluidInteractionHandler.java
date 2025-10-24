@@ -33,6 +33,14 @@ public class FluidInteractionHandler {
                     int replaceRadius = result.getInteraction().getReplaceRadius();
 
                     if (result.getInteraction().shouldReplaceAdjacent() && replaceRadius > 1) {
+                        // Check success chance before doing area replacement
+                        float successChance = result.getInteraction().getSuccessChance();
+                        if (successChance < 1.0f && level.getRandom().nextFloat() >= successChance) {
+                            // Interaction failed - play effects but don't place blocks
+                            playFailureEffects(level, pos);
+                            return true; // Return true to prevent vanilla behavior
+                        }
+
                         // Replace multiple blocks in a Manhattan distance radius around the fluid
                         int blocksReplaced = 0;
                         for (int dx = -replaceRadius; dx <= replaceRadius; dx++) {
@@ -64,20 +72,15 @@ public class FluidInteractionHandler {
                     } else {
                         // Standard behavior: replace single position
                         BlockPos targetPos;
-                        BlockPos consumePos;
+                        BlockPos consumePos = result.getAdjacentPos();
 
                         if (result.getInteraction().shouldReplaceAdjacent()) {
                             // Replace the adjacent block with the result
                             targetPos = result.getAdjacentPos();
-                            consumePos = pos; // Optionally consume the fluid position
                         } else {
                             // Replace the fluid with the result (default behavior)
                             targetPos = pos;
-                            consumePos = result.getAdjacentPos(); // Optionally consume the adjacent block
                         }
-
-                        // Place the generated block at the target position
-                        level.setBlockAndUpdate(targetPos, generatedBlock);
 
                         // Handle consumption based on consume_chance
                         float consumeChance = result.getInteraction().getConsumeChance();
@@ -91,8 +94,18 @@ public class FluidInteractionHandler {
                                 level.setBlockAndUpdate(consumePos, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
                             } else if (!consumeState.isAir()) {
                                 // If there's a block (and no fluid), remove it
-                                level.setBlockAndUpdate(consumePos, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+                                level.destroyBlock(consumePos, true);
                             }
+                        }
+
+                        // Check success chance for single block replacement
+                        float successChance = result.getInteraction().getSuccessChance();
+                        if (successChance < 1.0f && level.getRandom().nextFloat() >= successChance) {
+                            // Interaction failed - play effects but don't place blocks
+                            playFailureEffects(level, pos);
+                        }  else {
+                            // Place the generated block at the target position
+                            level.setBlockAndUpdate(targetPos, generatedBlock);
                         }
 
                         return true;
@@ -118,5 +131,25 @@ public class FluidInteractionHandler {
             return handleFluidInteraction(worldLevel, pos, state);
         }
         return false;
+    }
+
+    /**
+     * Plays particle effects and sound when a fluid interaction fails due to success_chance.
+     */
+    private static void playFailureEffects(Level level, BlockPos pos) {
+        // Play fizz sound effect
+        level.levelEvent(1501, pos, 0);
+
+        // Spawn smoke particles
+        for (int i = 0; i < 8; i++) {
+            double x = pos.getX() + 0.5 + (level.getRandom().nextDouble() - 0.5) * 0.8;
+            double y = pos.getY() + 0.5 + (level.getRandom().nextDouble() - 0.5) * 0.8;
+            double z = pos.getZ() + 0.5 + (level.getRandom().nextDouble() - 0.5) * 0.8;
+            double dx = (level.getRandom().nextDouble() - 0.5) * 0.2;
+            double dy = level.getRandom().nextDouble() * 0.1;
+            double dz = (level.getRandom().nextDouble() - 0.5) * 0.2;
+
+            level.addParticle(net.minecraft.core.particles.ParticleTypes.SMOKE, x, y, z, dx, dy, dz);
+        }
     }
 }

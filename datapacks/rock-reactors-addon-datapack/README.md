@@ -101,6 +101,12 @@ You can add your own interactions by creating JSON files in the `data/<namespace
   - `0.5` - 50% chance to consume
   - `1.0` - Always consumes
 
+- **success_chance** (optional, default: 1.0): The probability (0.0 to 1.0) that the interaction will succeed and place the result block
+  - `1.0` (default) - Always succeeds
+  - `0.5` - 50% chance to succeed
+  - `0.0` - Never succeeds (but still plays effects)
+  - When interaction fails, plays fizz sound and smoke particles but doesn't place blocks or consume anything
+
 ## Testing
 
 ### Test the glowstone interaction with consume chance:
@@ -119,14 +125,14 @@ You can add your own interactions by creating JSON files in the `data/<namespace
 4. The lava remains and continues flowing
 5. This creates a "petrification" effect rather than replacing the lava
 
-### Test the basalt interaction with replace_radius:
+### Test the diamond interaction with success_chance:
 
-1. Create a large cluster of deepslate blocks (at least 7x7x7)
-2. Pour a single source of flowing lava near the cluster
-3. All deepslate blocks within Manhattan distance 3 will transform into basalt
-4. Manhattan distance 3 means blocks up to 3 blocks away in total (e.g., 3 blocks in one direction, or 2+1 in two directions, or 1+1+1 in all three)
-5. This creates efficient large-scale terrain transformation
-6. The lava remains and can continue transforming as it flows to new areas
+1. Place coal blocks
+2. Pour lava adjacent to them
+3. Most of the time (99%), you'll see fizz sound and smoke particles but no diamond block
+4. Rarely (1%), the coal block will transform into diamond block
+5. When it fails, the lava is consumed (95% chance) but no diamond is created
+6. When it succeeds, the coal becomes diamond and lava is consumed (95% chance)
 
 ## Compatibility
 

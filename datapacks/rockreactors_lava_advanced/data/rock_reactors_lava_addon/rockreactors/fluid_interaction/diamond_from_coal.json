@@ -1,0 +1,12 @@
+{
+  "fluid_type": "any_lava",
+  "condition": {
+    "type": "adjacent_block",
+    "block": "minecraft:coal_block"
+  },
+  "result": "minecraft:diamond_block",
+  "replace_adjacent": true,
+  "consume_chance": 0.95,
+  "success_chance": 0.01
+}
+

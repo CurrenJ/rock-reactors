@@ -1,0 +1,11 @@
+{
+  "fluid_type": "any_lava",
+  "condition": {
+    "type": "adjacent_block",
+    "block": "minecraft:end_stone"
+  },
+  "result": "minecraft:purpur_block",
+  "replace_adjacent": true,
+  "success_chance": 0.15
+}
+

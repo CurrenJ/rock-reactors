@@ -2,11 +2,10 @@
   "fluid_type": "lava_flowing",
   "condition": {
     "type": "adjacent_block",
-    "block": "minecraft:gravel"
+    "block": "minecraft:netherrack"
   },
-  "result": "minecraft:tuff",
+  "result": "minecraft:magma_block",
   "replace_adjacent": true,
-  "success_chance": 0.8,
-  "consume_chance": 0.5
+  "replace_radius": 2
 }
 

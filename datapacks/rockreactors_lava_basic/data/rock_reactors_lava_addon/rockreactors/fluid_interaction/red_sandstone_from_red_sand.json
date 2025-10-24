@@ -1,0 +1,10 @@
+{
+  "fluid_type": "any_lava",
+  "condition": {
+    "type": "adjacent_block",
+    "block": "minecraft:red_sand"
+  },
+  "result": "minecraft:red_sandstone",
+  "replace_adjacent": true
+}
+
