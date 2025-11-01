@@ -2,6 +2,7 @@ package grill24.rockreactors.neoforge;
 
 import com.mojang.brigadier.CommandDispatcher;
 import grill24.rockreactors.command.FluidInteractionCommand;
+import grill24.rockreactors.command.RockReactorsCommand;
 import net.minecraft.commands.CommandSourceStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -19,5 +20,6 @@ public class CommandRegistrationNeoForge {
     public static void onRegisterCommands(RegisterCommandsEvent event) {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
         FluidInteractionCommand.register(dispatcher);
+        RockReactorsCommand.register(dispatcher);
     }
 }

@@ -27,8 +27,12 @@ versionRange = "${mod_minecraft_version_range}"
 ordering = "NONE"
 side = "BOTH"
 
-[[mixins]]
-config = "rockreactors.mixins.json"
+[[dependencies.rockreactors]]
+modId = "gelatinui"
+type = "optional"
+versionRange = "${mod_gelatinui_version_range}"
+ordering = "BEFORE"
+side = "BOTH"
 
 [[mixins]]
 config = "rockreactors-neoforge.mixins.json"

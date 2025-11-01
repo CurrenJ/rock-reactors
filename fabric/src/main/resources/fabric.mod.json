@@ -18,12 +18,15 @@
     "main": [
       "grill24.rockreactors.fabric.RockReactorsFabric"
     ],
-    "client": [
-      "grill24.rockreactors.fabric.client.RockReactorsFabricClient"
+    "client": [],
+    "gelatinui:menu_registration": [
+      "grill24.rockreactors.compat.GelatinMenus::registerMenus"
+    ],
+    "gelatinui:screen_registration": [
+      "grill24.rockreactors.compat.GelatinScreens::registerScreens"
     ]
   },
   "mixins": [
-    "rockreactors.mixins.json",
     "rockreactors-fabric.mixins.json"
   ],
   "accessWidener": "rockreactors.accesswidener",
@@ -34,6 +37,6 @@
     "fabric-api": "*"
   },
   "suggests": {
-    "another-mod": "*"
+    "gelatinui": "*"
   }
 }

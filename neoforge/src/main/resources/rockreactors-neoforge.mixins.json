@@ -3,7 +3,6 @@
   "package": "grill24.rockreactors.neoforge.mixin",
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
-  "refmap": "rockreactors.refmap.json",
   "mixins": [
   ],
   "injectors": {

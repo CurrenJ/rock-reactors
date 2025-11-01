@@ -4,9 +4,13 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
@@ -110,6 +114,24 @@ public class FluidInteractionData {
 
     public float getSuccessChance() {
         return successChance;
+    }
+
+    // ----- Convenience methods for UI representation -----
+
+    public MutableComponent getFluidText() {
+        return switch (fluidType) {
+            case "lava_source", "any_lava", "lava_flowing" -> Component.translatable(Blocks.LAVA.getDescriptionId());
+            case "water_source", "any_water", "water_flowing" -> Component.translatable(Blocks.WATER.getDescriptionId());
+            default -> Component.literal(fluidType);
+        };
+    }
+
+    public ItemStack getFluidItemStackRepresentation() {
+        return switch (fluidType) {
+            case "lava_source", "lava_flowing", "any_lava" -> new ItemStack(net.minecraft.world.item.Items.LAVA_BUCKET);
+            case "water_source", "water_flowing", "any_water" -> new ItemStack(net.minecraft.world.item.Items.WATER_BUCKET);
+            default -> ItemStack.EMPTY;
+        };
     }
 
     /**

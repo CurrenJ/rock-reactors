@@ -30,6 +30,8 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:$rootProject.fabric_api_version"
 
+    modImplementation("io.github.currenj.gelatinui:gelatinui-fabric:${gelatinui_version}")
+
     common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
 }
@@ -68,6 +70,9 @@ remapJar {
 }
 
 loom {
+    mixin {
+        defaultRefmapName = 'rockreactors.refmap.json'
+    }
     runs {
         datagen {
             inherit client

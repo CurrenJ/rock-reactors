@@ -3,7 +3,7 @@
   "package": "grill24.rockreactors.fabric.mixin",
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
-  "refmap": "rockreactors-fabric.refmap.json",
+  "refmap": "rockreactors.refmap.json",
   "client": [
   ],
   "mixins": [
