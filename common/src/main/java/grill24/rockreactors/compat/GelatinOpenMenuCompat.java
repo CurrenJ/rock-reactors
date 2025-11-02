@@ -13,79 +13,22 @@ import net.minecraft.server.level.ServerPlayer;
  * via reflection at runtime and falls back to no-op when it's not present.
  */
 public final class GelatinOpenMenuCompat {
-    private static final org.slf4j.Logger LOGGER = RockReactors.LOGGER;
-
-    private static boolean initialized = false;
-    private static boolean available = false;
-
-    // Detected Gelatin UI holder and cached method if found
-    private static Class<?> gelatinClass = null;
-
-    private static Class<?> gelatinMenus = null;
-    private static Method openMenuByIdMethod = null;
-
-    private GelatinOpenMenuCompat() {}
-
-    public static synchronized void init() {
-        if (initialized) return;
-        initialized = true;
-
-        try {
-            String[] candidates = new String[] {
-                "io.github.currenj.gelatinui.GelatinUi",
-                "io.github.currenj.gelatinui.GelatinUI",
-                "io.github.currenj.gelatinui.Gelatin"
-            };
-
-            for (String cname : candidates) {
-                try {
-                    gelatinClass = Class.forName(cname);
-                    break;
-                } catch (ClassNotFoundException ignored) {
-                    // try next
-                }
-            }
-
-            if (gelatinClass == null) {
-                available = false;
-                LOGGER.info("Gelatin UI not found on classpath; optional open-menu features disabled.");
-                return;
-            }
-
-            try {
-                gelatinMenus = Class.forName("grill24.rockreactors.compat.GelatinMenus");
-                openMenuByIdMethod = gelatinMenus.getMethod("openMenuById", ServerPlayer.class, String.class);
-            } catch (ClassNotFoundException | NoSuchMethodException e) {
-                LOGGER.warn("GelatinMenus open-by-id not found or incompatible: {}", e.toString());
-            }
-
-            available = true;
-            LOGGER.info("Gelatin UI detected on classpath; optional open-menu integration enabled.");
-        } catch (Throwable t) {
-            available = false;
-            LOGGER.warn("Failed to initialize Gelatin UI open-menu integration (continuing without it): {}", t.toString());
-        }
-    }
-
-    public static boolean isAvailable() {
-        if (!available) init();
-        return available;
-    }
+    private static final String GELATIN_MENUS_CLASS = "grill24.rockreactors.compat.GelatinMenus";
+    private static final String GELATIN_MENUS_OPEN_METHOD = "openMenuById";
 
     public static void openRockReactorsMenu(ServerPlayer player) {
-        if (!isAvailable()) return;
+        boolean success = CompatUtil.invokeIfDependencyPresent(
+            CompatUtil.GELATIN_UI_CLASS,
+            GELATIN_MENUS_CLASS,
+            GELATIN_MENUS_OPEN_METHOD,
+            player,
+            "rockreactors"
+        );
 
-        try {
-            if (openMenuByIdMethod != null) {
-                openMenuByIdMethod.invoke(null, player, "rockreactors");
-            }
-        } catch (Throwable t) {
-            Throwable cause = t;
-            if (t instanceof java.lang.reflect.InvocationTargetException) {
-                cause = ((java.lang.reflect.InvocationTargetException) t).getCause();
-            }
-            LOGGER.warn("Failed to open Rock Reactors menu: {}", cause.toString());
+        if (success) {
+            RockReactors.LOGGER.info("Opened Rock Reactors menu for player {} via Gelatin UI.", player.getName().getString());
+        } else {
+            RockReactors.LOGGER.warn("Failed to open Rock Reactors menu; Gelatin UI not present.");
         }
     }
 }
-

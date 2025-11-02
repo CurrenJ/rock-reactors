@@ -2,6 +2,7 @@ package grill24.rockreactors.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import grill24.rockreactors.compat.CompatUtil;
 import grill24.rockreactors.compat.GelatinOpenMenuCompat;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -26,7 +27,7 @@ public class RockReactorsCommand {
         CommandSourceStack source = context.getSource();
 
         if (source.getEntity() instanceof ServerPlayer player) {
-            if (!GelatinOpenMenuCompat.isAvailable()) {
+            if (!CompatUtil.isGelatinUiPresent()) {
                 // Show simple fluid interactions summary when Gelatin UI is not available
                 FluidInteractionCommand.listInteractionsSimple(source);
                 // Append dependency suggestion
@@ -34,7 +35,7 @@ public class RockReactorsCommand {
                     .append(Component.literal("Gelatin UI")
                         .withStyle(style -> style
                             .withColor(ChatFormatting.YELLOW)
-                            .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://modrinth.com/mod/gelatin-ui"))
+                            .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.curseforge.com/minecraft/mc-mods/gelatin-ui"))
                             .withUnderlined(true)))
                     .append(Component.literal(" for a visual display.")
                         .withStyle(ChatFormatting.YELLOW));
